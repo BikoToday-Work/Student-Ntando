@@ -15,10 +15,68 @@ enum Role {
   FEDERATION_OFFICIAL
 }
 
+enum Gender {
+  MALE
+  FEMALE
+  MIXED
+}
+
+enum CompetitionStatus {
+  DRAFT
+  UPCOMING
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
   password  String
+  firstName String
+  lastName  String
   role      Role
+  teamId    String?
+  team      Team?    @relation(fields: [teamId], references: [id])
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Team {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  federation  String
+  country     String
+  logoUrl     String?
+  users       User[]
+  athletes    Athlete[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Athlete {
+  id          String    @id @default(uuid())
+  firstName   String
+  lastName    String
+  dateOfBirth DateTime
+  gender      Gender
+  teamId      String
+  team        Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  photoUrl    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([teamId])
+}
+
+model Competition {
+  id          String            @id @default(uuid())
+  name        String
+  description String?
+  startDate   DateTime
+  endDate     DateTime
+  location    String
+  status      CompetitionStatus @default(DRAFT)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
 }
