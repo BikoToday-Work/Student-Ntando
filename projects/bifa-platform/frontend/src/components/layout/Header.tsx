@@ -2,45 +2,65 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { Menu, X, LogIn, UserPlus } from 'lucide-react';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="bg-white shadow-sm border-b">
+    <header className="bg-white shadow-sm border-b sticky top-0 z-50">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          <div className="flex">
-            <Link href="/" className="flex items-center">
-              <span className="text-xl font-bold text-blue-600">BIFA Platform</span>
+          <div className="flex items-center">
+            <Link href="/" className="flex items-center gap-2">
+              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center">
+                <span className="text-xl font-bold text-white">B</span>
+              </div>
+              <span className="text-xl font-bold text-gray-900">BIFA Platform</span>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex md:items-center md:space-x-4">
-            <Link href="/admin" className="px-3 py-2 rounded-md hover:bg-gray-100">Admin</Link>
-            <Link href="/referee" className="px-3 py-2 rounded-md hover:bg-gray-100">Referee</Link>
-            <Link href="/secretariat" className="px-3 py-2 rounded-md hover:bg-gray-100">Secretariat</Link>
-            <Link href="/public" className="px-3 py-2 rounded-md hover:bg-gray-100">Public</Link>
+          <div className="hidden md:flex md:items-center md:space-x-1">
+            <Link href="/" className="px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium transition">Home</Link>
+            <Link href="/public" className="px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium transition">Matches</Link>
+            <Link href="/public" className="px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium transition">Teams</Link>
+            <Link href="/public" className="px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium transition">News</Link>
+            <div className="ml-4 flex items-center gap-2">
+              <Link href="/login" className="px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium transition inline-flex items-center gap-2">
+                <LogIn className="h-4 w-4" />
+                Login
+              </Link>
+              <Link href="/register" className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 font-medium transition inline-flex items-center gap-2">
+                <UserPlus className="h-4 w-4" />
+                Sign Up
+              </Link>
+            </div>
           </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
-            <button onClick={() => setIsOpen(!isOpen)} className="p-2">
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
-              </svg>
+            <button 
+              onClick={() => setIsOpen(!isOpen)} 
+              className="p-2 rounded-lg hover:bg-gray-100 transition"
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden pb-4">
-            <Link href="/admin" className="block px-3 py-2 rounded-md hover:bg-gray-100">Admin</Link>
-            <Link href="/referee" className="block px-3 py-2 rounded-md hover:bg-gray-100">Referee</Link>
-            <Link href="/secretariat" className="block px-3 py-2 rounded-md hover:bg-gray-100">Secretariat</Link>
-            <Link href="/public" className="block px-3 py-2 rounded-md hover:bg-gray-100">Public</Link>
+          <div className="md:hidden pb-4 space-y-1 animate-fade-in">
+            <Link href="/" className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium transition">Home</Link>
+            <Link href="/public" className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium transition">Matches</Link>
+            <Link href="/public" className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium transition">Teams</Link>
+            <Link href="/public" className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium transition">News</Link>
+            <div className="pt-2 border-t mt-2 space-y-1">
+              <Link href="/login" className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium transition">Login</Link>
+              <Link href="/register" className="block px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 font-medium transition">Sign Up</Link>
+            </div>
           </div>
         )}
       </nav>
