@@ -1,5 +1,5 @@
 import express from 'express';
-import { getLeagues, getSeasons, getTeams, getTeamStatistics, getTeamSeasons, getTeamCountries, getStandings, getFixturePlayers, getFixtures, getTopScorers, getSquad } from '../controllers/footballController.js';
+import { getLeagues, getSeasons, getTeams, getTeamStatistics, getTeamSeasons, getTeamCountries, getStandings, getFixturePlayers, getFixtures, getTopScorers, getSquad, getTransfers } from '../controllers/footballController.js';
 import { authenticateToken, requireRole } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -16,6 +16,7 @@ router.get('/fixtures/players', getFixturePlayers);
 router.get('/fixtures', getFixtures);
 router.get('/topscorers', getTopScorers);
 router.get('/squad', getSquad);
+router.get('/transfers', getTransfers);
 
 // Protected endpoints for specific roles
 router.get('/admin/leagues', authenticateToken, requireRole('ADMIN', 'SECRETARIAT'), getLeagues);
@@ -29,5 +30,6 @@ router.get('/admin/fixtures/players', authenticateToken, requireRole('ADMIN', 'S
 router.get('/admin/fixtures', authenticateToken, requireRole('ADMIN', 'SECRETARIAT'), getFixtures);
 router.get('/admin/topscorers', authenticateToken, requireRole('ADMIN', 'SECRETARIAT'), getTopScorers);
 router.get('/admin/squad', authenticateToken, requireRole('ADMIN', 'SECRETARIAT'), getSquad);
+router.get('/admin/transfers', authenticateToken, requireRole('ADMIN', 'SECRETARIAT'), getTransfers);
 
 export default router;

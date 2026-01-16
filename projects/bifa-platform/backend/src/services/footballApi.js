@@ -266,5 +266,27 @@ export const footballApi = {
       console.error('Football API Error:', error);
       throw error;
     }
+  },
+
+  async getTransfers(team) {
+    try {
+      const response = await fetch(`${FOOTBALL_API_BASE}/transfers?team=${team}`, {
+        method: 'GET',
+        headers: {
+          'x-apisports-key': API_KEY,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Football API Error:', error);
+      throw error;
+    }
   }
 };

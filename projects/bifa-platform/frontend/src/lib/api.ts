@@ -34,4 +34,16 @@ export const api = {
     if (!res.ok) throw new Error('Failed to fetch users');
     return res.json();
   },
+
+  async getTeams() {
+    const res = await fetch(`${API_URL}/football/teams`);
+    if (!res.ok) throw new Error('Failed to fetch teams');
+    return res.json();
+  },
+
+  async getFixtures() {
+    const res = await fetch(`${API_URL}/football/fixtures`);
+    if (!res.ok) throw new Error('Failed to fetch fixtures');
+    return res.json();
+  },
 };

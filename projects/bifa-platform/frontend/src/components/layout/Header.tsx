@@ -18,6 +18,8 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:items-center md:space-x-4">
+            <Link href="/news" className="px-3 py-2 rounded-md hover:bg-gray-100">News</Link>
+            <Link href="/teams" className="px-3 py-2 rounded-md hover:bg-gray-100">Teams</Link>
             <Link href="/admin" className="px-3 py-2 rounded-md hover:bg-gray-100">Admin</Link>
             <Link href="/referee" className="px-3 py-2 rounded-md hover:bg-gray-100">Referee</Link>
             <Link href="/secretariat" className="px-3 py-2 rounded-md hover:bg-gray-100">Secretariat</Link>
@@ -37,6 +39,8 @@ export default function Header() {
         {/* Mobile Navigation */}
         {isOpen && (
           <div className="md:hidden pb-4">
+            <Link href="/news" className="block px-3 py-2 rounded-md hover:bg-gray-100">News</Link>
+            <Link href="/teams" className="block px-3 py-2 rounded-md hover:bg-gray-100">Teams</Link>
             <Link href="/admin" className="block px-3 py-2 rounded-md hover:bg-gray-100">Admin</Link>
             <Link href="/referee" className="block px-3 py-2 rounded-md hover:bg-gray-100">Referee</Link>
             <Link href="/secretariat" className="block px-3 py-2 rounded-md hover:bg-gray-100">Secretariat</Link>

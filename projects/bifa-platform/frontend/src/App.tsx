@@ -52,6 +52,8 @@ export default function App() {
           </Link>
           <nav className="hidden md:flex gap-6">
             <Link href="/" className="text-gray-700 hover:text-blue-600 font-medium">Home</Link>
+            <Link href="/news" className="text-gray-700 hover:text-blue-600 font-medium">News</Link>
+            <Link href="/teams" className="text-gray-700 hover:text-blue-600 font-medium">Teams</Link>
             <Link href="/matches" className="text-gray-700 hover:text-blue-600 font-medium">Matches</Link>
             <Link href="/competitions" className="text-gray-700 hover:text-blue-600 font-medium">Competitions</Link>
             <Link href="/leagues" className="text-gray-700 hover:text-blue-600 font-medium">Leagues</Link>

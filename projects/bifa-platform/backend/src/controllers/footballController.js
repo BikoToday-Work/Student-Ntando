@@ -142,3 +142,18 @@ export const getSquad = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const getTransfers = async (req, res) => {
+  try {
+    const { team } = req.query;
+    
+    if (!team) {
+      return res.status(400).json({ error: 'Team ID is required' });
+    }
+    
+    const data = await footballApi.getTransfers(team);
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

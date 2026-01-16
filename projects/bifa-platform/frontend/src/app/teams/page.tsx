@@ -39,8 +39,15 @@ export default function TeamsPage() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">Football Teams</h1>
-          <p className="text-gray-600 mt-2">Premier League teams for 2024 season</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Football Teams</h1>
+              <p className="text-gray-600 mt-2">Premier League teams for 2024 season</p>
+            </div>
+            <a href="/" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              ← Back to Home
+            </a>
+          </div>
         </div>
       </header>
 
