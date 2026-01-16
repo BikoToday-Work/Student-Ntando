@@ -1,21 +1,21 @@
 export type UserRole = 
-  | 'admin' 
-  | 'secretariat' 
-  | 'referee' 
-  | 'teamManager' 
-  | 'federationOfficial';
+  | 'ADMIN' 
+  | 'SECRETARIAT' 
+  | 'REFEREE' 
+  | 'TEAM_MANAGER' 
+  | 'FEDERATION_OFFICIAL';
 
 export interface User {
   id: string;
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   role: UserRole;
-  avatar?: string;
-  createdAt: string;
 }
 
 export interface AuthState {
   user: User | null;
+  token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
 }
@@ -25,24 +25,18 @@ export interface LoginCredentials {
   password: string;
 }
 
-export interface RegisterData extends LoginCredentials {
-  name: string;
-  confirmPassword: string;
+export interface RegisterData {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  role?: UserRole;
 }
 
-// Role-based route access configuration
 export const roleRoutes: Record<UserRole, string> = {
-  admin: '/admin',
-  secretariat: '/secretariat',
-  referee: '/referee',
-  teamManager: '/team-manager',
-  federationOfficial: '/federation',
-};
-
-export const rolePermissions: Record<UserRole, string[]> = {
-  admin: ['all'],
-  secretariat: ['matches', 'teams', 'registrations', 'documents'],
-  referee: ['matches', 'reports', 'schedule'],
-  teamManager: ['team', 'players', 'schedule'],
-  federationOfficial: ['reports', 'statistics', 'oversight'],
+  ADMIN: '/admin',
+  SECRETARIAT: '/secretariat',
+  REFEREE: '/referee',
+  TEAM_MANAGER: '/team-manager',
+  FEDERATION_OFFICIAL: '/federation',
 };

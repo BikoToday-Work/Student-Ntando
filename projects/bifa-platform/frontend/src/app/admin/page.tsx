@@ -1,8 +1,315 @@
+"use client";
+
+import ProtectedRoute from '@/components/ProtectedRoute';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Users, Settings, Shield, Trophy, Calendar, FileText, UserPlus, Building, Eye } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import Footer from '@/components/layout/Footer';
+
 export default function AdminPage() {
+  const { user, logout } = useAuth();
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    totalCompetitions: 0,
+    totalMatches: 0,
+    totalReferees: 0,
+    loading: true
+  });
+  const [footballData, setFootballData] = useState<{
+    leagues: any[];
+    visible: boolean;
+    loading: boolean;
+  }>({
+    leagues: [],
+    visible: false,
+    loading: false
+  });
+
+  useEffect(() => {
+    // Fetch real dashboard stats
+    const fetchStats = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://localhost:5000/api/users', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (response.ok) {
+          const users = await response.json();
+          setStats(prev => ({ ...prev, totalUsers: users.length }));
+        }
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+      } finally {
+        setStats(prev => ({ ...prev, loading: false }));
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  const handleAddUser = () => {
+    // Navigate to user creation form
+    window.location.href = '/signup';
+  };
+
+  const handleCreateCompetition = () => {
+    alert('Competition creation form will be implemented');
+  };
+
+  const handleScheduleMatch = () => {
+    alert('Match scheduling form will be implemented');
+  };
+
+  const handleManageUsers = () => {
+    alert('User management interface will be implemented');
+  };
+
+  const handleViewRoles = () => {
+    alert('Role management interface will be implemented');
+  };
+
+  const handleViewCompetitions = () => {
+    alert('Competition management interface will be implemented');
+  };
+
+  const handleScheduleMatches = () => {
+    alert('Match scheduling interface will be implemented');
+  };
+
+  const loadFootballData = async () => {
+    setFootballData(prev => ({ ...prev, loading: true }));
+    try {
+      const response = await fetch('http://localhost:5000/api/football/leagues');
+      if (response.ok) {
+        const data = await response.json();
+        setFootballData({
+          leagues: data.response || [],
+          visible: true,
+          loading: false
+        });
+      }
+    } catch (error) {
+      console.error('Error loading football data:', error);
+      setFootballData(prev => ({ ...prev, loading: false }));
+    }
+  };
+
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4">Admin Portal</h1>
-      <p>User management and system configuration</p>
-    </div>
+    <ProtectedRoute allowedRoles={['ADMIN']}>
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <header className="bg-white shadow">
+          <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 className="text-2xl font-bold text-gray-900">BRICS Admin Dashboard</h1>
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-gray-600">
+                {user?.firstName} {user?.lastName} ({user?.role})
+              </span>
+              <Button onClick={logout} variant="outline">Logout</Button>
+            </div>
+          </div>
+        </header>
+
+        <main className="max-w-7xl mx-auto px-4 py-8 flex-1">
+          {/* Dashboard Stats */}
+          <div className="grid md:grid-cols-4 gap-6 mb-8">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {stats.loading ? '...' : stats.totalUsers}
+                </div>
+                <p className="text-xs text-muted-foreground">All registered users</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Competitions</CardTitle>
+                <Trophy className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">12</div>
+                <p className="text-xs text-muted-foreground">Active competitions</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Matches</CardTitle>
+                <Calendar className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">48</div>
+                <p className="text-xs text-muted-foreground">This month</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Referees</CardTitle>
+                <Shield className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">24</div>
+                <p className="text-xs text-muted-foreground">Certified referees</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Quick Actions */}
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-4 gap-4">
+                <Button onClick={handleAddUser} className="h-20 flex flex-col gap-2">
+                  <UserPlus className="h-6 w-6" />
+                  <span>Add New User</span>
+                </Button>
+                <Button onClick={handleCreateCompetition} className="h-20 flex flex-col gap-2" variant="outline">
+                  <Trophy className="h-6 w-6" />
+                  <span>Create Competition</span>
+                </Button>
+                <Button onClick={handleScheduleMatch} className="h-20 flex flex-col gap-2" variant="outline">
+                  <Calendar className="h-6 w-6" />
+                  <span>Schedule Match</span>
+                </Button>
+                <Button onClick={loadFootballData} className="h-20 flex flex-col gap-2" variant="outline" disabled={footballData.loading}>
+                  <Eye className="h-6 w-6" />
+                  <span>{footballData.loading ? 'Loading...' : 'View Football Data'}</span>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Football Data Display */}
+          {footballData.visible && (
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle>Football Leagues Data</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="max-h-96 overflow-y-auto">
+                  {footballData.leagues.length > 0 ? (
+                    <div className="grid gap-4">
+                      {footballData.leagues.slice(0, 10).map((league, i) => (
+                        <div key={i} className="p-4 border rounded-lg cursor-pointer hover:bg-gray-50" 
+                             onClick={() => window.location.href = `/league/${league.league?.id}`}>
+                          <div className="flex items-center gap-4">
+                            {league.league?.logo && (
+                              <img src={league.league.logo} alt="League Logo" className="w-12 h-12 object-contain" />
+                            )}
+                            <div>
+                              <h3 className="font-semibold">{league.league?.name}</h3>
+                              <p className="text-sm text-gray-600">{league.country?.name}</p>
+                              <p className="text-xs text-gray-500">Type: {league.league?.type}</p>
+                              <p className="text-xs text-blue-600 mt-1">Click to view details →</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-500">No football data available</p>
+                  )}
+                </div>
+                <Button 
+                  onClick={() => setFootballData(prev => ({ ...prev, visible: false }))}
+                  variant="outline" 
+                  className="mt-4"
+                >
+                  Hide Data
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Management Sections */}
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>User Management</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded">
+                    <div>
+                      <p className="font-medium">System Users</p>
+                      <p className="text-sm text-gray-600">Manage all platform users</p>
+                    </div>
+                    <Button onClick={handleManageUsers} size="sm">Manage</Button>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded">
+                    <div>
+                      <p className="font-medium">Role Assignments</p>
+                      <p className="text-sm text-gray-600">Update user permissions</p>
+                    </div>
+                    <Button onClick={handleViewRoles} size="sm" variant="outline">View</Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Competition Management</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded">
+                    <div>
+                      <p className="font-medium">Active Competitions</p>
+                      <p className="text-sm text-gray-600">Monitor ongoing tournaments</p>
+                    </div>
+                    <Button onClick={handleViewCompetitions} size="sm">View All</Button>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded">
+                    <div>
+                      <p className="font-medium">Match Scheduling</p>
+                      <p className="text-sm text-gray-600">Create and manage fixtures</p>
+                    </div>
+                    <Button onClick={handleScheduleMatches} size="sm" variant="outline">Schedule</Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* System Overview */}
+          <Card>
+            <CardHeader>
+              <CardTitle>System Overview</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <Building className="h-12 w-12 mx-auto text-blue-600 mb-2" />
+                  <h3 className="font-semibold mb-1">Organizations</h3>
+                  <p className="text-sm text-gray-600">Manage teams and federations</p>
+                </div>
+                <div className="text-center">
+                  <FileText className="h-12 w-12 mx-auto text-green-600 mb-2" />
+                  <h3 className="font-semibold mb-1">Reports</h3>
+                  <p className="text-sm text-gray-600">Generate system reports</p>
+                </div>
+                <div className="text-center">
+                  <Settings className="h-12 w-12 mx-auto text-purple-600 mb-2" />
+                  <h3 className="font-semibold mb-1">Settings</h3>
+                  <p className="text-sm text-gray-600">Configure system preferences</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </main>
+        
+        <Footer />
+      </div>
+    </ProtectedRoute>
   );
 }
