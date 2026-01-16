@@ -1,8 +1,10 @@
-import { ReactNode } from 'react';
-import { Navigate } from 'react-router-dom';
+"use client";
+
+import { ReactNode, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { Header } from './Header';
-import { Sidebar } from './Sidebar';
+import Header from './Header';
+import Sidebar from './Sidebar';
 import { UserRole } from '@/types/auth';
 
 interface DashboardLayoutProps {
@@ -12,6 +14,17 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children, allowedRoles }: DashboardLayoutProps) {
   const { user, isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (!isAuthenticated || !user) {
+        router.push('/login');
+      } else if (allowedRoles && !allowedRoles.includes(user.role)) {
+        router.push('/');
+      }
+    }
+  }, [isAuthenticated, user, isLoading, allowedRoles, router]);
 
   if (isLoading) {
     return (
@@ -22,17 +35,25 @@ export function DashboardLayout({ children, allowedRoles }: DashboardLayoutProps
   }
 
   if (!isAuthenticated || !user) {
-    return <Navigate to="/login" replace />;
+    return null;
   }
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
-    return <Navigate to="/" replace />;
+    return null;
   }
+
+  // Placeholder items - you can make this dynamic based on user.role
+  const sidebarItems = [
+    { label: 'Overview', href: '/admin' },
+    { label: 'Matches', href: '/admin/matches' },
+    { label: 'Teams', href: '/admin/teams' },
+    { label: 'Settings', href: '/admin/settings' },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <Sidebar />
+      <Sidebar items={sidebarItems} />
       <main className="ml-64 min-h-[calc(100vh-4rem)] p-6">
         {children}
       </main>

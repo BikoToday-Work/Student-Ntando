@@ -9,9 +9,9 @@ export default function HomePage() {
   const { t } = useTranslation();
 
   const upcomingMatches = [
-    { id: 1, home: 'Vital\'O FC', away: 'Le Messager', date: '2026-01-15', time: '15:00' },
-    { id: 2, home: 'Aigle Noir', away: 'Athletico', date: '2026-01-16', time: '16:00' },
-    { id: 3, home: 'Flambeau', away: 'Musongati', date: '2026-01-17', time: '14:00' },
+    { id: 1, home: 'FC Barcelona', away: 'Real Madrid', date: '2026-01-15', time: '15:00' },
+    { id: 2, home: 'Orlando Pirate', away: 'Sundowns', date: '2026-01-16', time: '16:00' },
+    { id: 3, home: 'Siwelele', away: 'Kaizer Chiefs', date: '2026-01-17', time: '14:00' },
   ];
 
   const newsItems = [

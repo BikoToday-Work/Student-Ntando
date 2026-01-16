@@ -29,17 +29,29 @@ enum CompetitionStatus {
   CANCELLED
 }
 
+// Core Models
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
   password  String
-  firstName String
-  lastName  String
+  firstName String   @default("")
+  lastName  String   @default("")
   role      Role
   teamId    String?
   team      Team?    @relation(fields: [teamId], references: [id])
+  
+  // Relations
+  referee           Referee?
+  content           Content[]
+  media             Media[]
+  workflowInstances WorkflowInstance[]
+  workflowActions   WorkflowAction[]
+  documents         Document[]
+  approvedDocuments Document[] @relation("DocumentApprover")
+  auditLogs         AuditLog[]
+  
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model Team {
@@ -50,6 +62,14 @@ model Team {
   logoUrl     String?
   users       User[]
   athletes    Athlete[]
+  
+  // Relations
+  homeMatches    Match[] @relation("HomeMatches")
+  awayMatches    Match[] @relation("AwayMatches")
+  matchEvents    MatchEvent[]
+  matchStats     MatchStatistic[]
+  standings      Standing[]
+  
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
@@ -63,12 +83,92 @@ model Athlete {
   teamId      String
   team        Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
   photoUrl    String?
+  
+  // Relations
+  matchEvents        MatchEvent[]
+  disciplinaryReports DisciplinaryReport[]
+  
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   @@index([teamId])
 }
 
+// Feature 1: Referee Registry + Disciplinary Reporting
+model Referee {
+  id            String   @id @default(uuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id])
+  licenseNumber String   @unique
+  certification String
+  experience    Int
+  availability  Json
+  assignments   MatchAssignment[]
+  reports       DisciplinaryReport[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model MatchAssignment {
+  id        String   @id @default(uuid())
+  matchId   String
+  match     Match    @relation(fields: [matchId], references: [id])
+  refereeId String
+  referee   Referee  @relation(fields: [refereeId], references: [id])
+  role      RefereeRole
+  status    AssignmentStatus
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DisciplinaryReport {
+  id          String   @id @default(uuid())
+  matchId     String
+  match       Match    @relation(fields: [matchId], references: [id])
+  refereeId   String
+  referee     Referee  @relation(fields: [refereeId], references: [id])
+  playerId    String?
+  player      Athlete? @relation(fields: [playerId], references: [id])
+  incident    String
+  action      DisciplinaryAction
+  minute      Int?
+  description String
+  status      ReportStatus
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum RefereeRole {
+  MAIN_REFEREE
+  ASSISTANT_REFEREE
+  FOURTH_OFFICIAL
+  VAR_REFEREE
+}
+
+enum AssignmentStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  CONFIRMED
+}
+
+enum DisciplinaryAction {
+  YELLOW_CARD
+  RED_CARD
+  SUSPENSION
+  FINE
+  WARNING
+}
+
+enum ReportStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+}
+
+// Feature 2: Competition + Match + Stats Engine
 model Competition {
   id          String            @id @default(uuid())
   name        String
@@ -77,6 +177,320 @@ model Competition {
   endDate     DateTime
   location    String
   status      CompetitionStatus @default(DRAFT)
+  format      CompetitionFormat
+  matches     Match[]
+  standings   Standing[]
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
+}
+
+model Match {
+  id            String              @id @default(uuid())
+  competitionId String
+  competition   Competition         @relation(fields: [competitionId], references: [id])
+  homeTeamId    String
+  homeTeam      Team                @relation("HomeMatches", fields: [homeTeamId], references: [id])
+  awayTeamId    String
+  awayTeam      Team                @relation("AwayMatches", fields: [awayTeamId], references: [id])
+  scheduledAt   DateTime
+  venue         String
+  status        MatchStatus         @default(SCHEDULED)
+  homeScore     Int?
+  awayScore     Int?
+  events        MatchEvent[]
+  assignments   MatchAssignment[]
+  reports       DisciplinaryReport[]
+  statistics    MatchStatistic[]
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+}
+
+model MatchEvent {
+  id        String    @id @default(uuid())
+  matchId   String
+  match     Match     @relation(fields: [matchId], references: [id])
+  playerId  String?
+  player    Athlete?  @relation(fields: [playerId], references: [id])
+  teamId    String
+  team      Team      @relation(fields: [teamId], references: [id])
+  type      EventType
+  minute    Int
+  details   String?
+  createdAt DateTime  @default(now())
+}
+
+model MatchStatistic {
+  id       String @id @default(uuid())
+  matchId  String
+  match    Match  @relation(fields: [matchId], references: [id])
+  teamId   String
+  team     Team   @relation(fields: [teamId], references: [id])
+  statType String
+  value    Int
+}
+
+model Standing {
+  id            String      @id @default(uuid())
+  competitionId String
+  competition   Competition @relation(fields: [competitionId], references: [id])
+  teamId        String
+  team          Team        @relation(fields: [teamId], references: [id])
+  position      Int
+  played        Int         @default(0)
+  won           Int         @default(0)
+  drawn         Int         @default(0)
+  lost          Int         @default(0)
+  goalsFor      Int         @default(0)
+  goalsAgainst  Int         @default(0)
+  goalDiff      Int         @default(0)
+  points        Int         @default(0)
+  updatedAt     DateTime    @updatedAt
+}
+
+enum CompetitionFormat {
+  LEAGUE
+  KNOCKOUT
+  GROUP_STAGE
+  ROUND_ROBIN
+}
+
+enum MatchStatus {
+  SCHEDULED
+  LIVE
+  HALF_TIME
+  FULL_TIME
+  POSTPONED
+  CANCELLED
+}
+
+enum EventType {
+  GOAL
+  YELLOW_CARD
+  RED_CARD
+  SUBSTITUTION
+  PENALTY
+  OWN_GOAL
+  KICK_OFF
+  HALF_TIME
+  FULL_TIME
+}
+
+// Feature 3: CMS + Website + Multilingual UI
+model Content {
+  id          String        @id @default(uuid())
+  title       String
+  slug        String        @unique
+  content     String
+  excerpt     String?
+  authorId    String
+  author      User          @relation(fields: [authorId], references: [id])
+  type        ContentType
+  status      ContentStatus @default(DRAFT)
+  language    String        @default("en")
+  featuredImage String?
+  tags        String[]
+  category    String?
+  publishedAt DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  translations ContentTranslation[]
+}
+
+model ContentTranslation {
+  id        String  @id @default(uuid())
+  contentId String
+  content   Content @relation(fields: [contentId], references: [id])
+  language  String
+  title     String
+  body      String
+  excerpt   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([contentId, language])
+}
+
+model Media {
+  id          String    @id @default(uuid())
+  filename    String
+  originalName String
+  mimeType    String
+  size        Int
+  url         String
+  alt         String?
+  uploadedBy  String
+  uploader    User      @relation(fields: [uploadedBy], references: [id])
+  createdAt   DateTime  @default(now())
+}
+
+model Page {
+  id        String      @id @default(uuid())
+  title     String
+  slug      String      @unique
+  content   String
+  template  String?
+  status    PageStatus  @default(DRAFT)
+  language  String      @default("en")
+  metaTitle String?
+  metaDescription String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+enum ContentType {
+  NEWS
+  ARTICLE
+  ANNOUNCEMENT
+  DOCUMENT
+  PRESS_RELEASE
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum PageStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+// Feature 4: Secretariat Workflows + Governance Portal
+model Workflow {
+  id          String         @id @default(uuid())
+  name        String
+  description String?
+  type        WorkflowType
+  steps       WorkflowStep[]
+  instances   WorkflowInstance[]
+  isActive    Boolean        @default(true)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model WorkflowStep {
+  id         String     @id @default(uuid())
+  workflowId String
+  workflow   Workflow   @relation(fields: [workflowId], references: [id])
+  name       String
+  order      Int
+  assignedRole String
+  isRequired Boolean    @default(true)
+  actions    WorkflowAction[] @relation("StepAction")
+}
+
+model WorkflowInstance {
+  id         String              @id @default(uuid())
+  workflowId String
+  workflow   Workflow            @relation(fields: [workflowId], references: [id])
+  entityType String
+  entityId   String
+  status     WorkflowStatus      @default(PENDING)
+  currentStep Int                @default(1)
+  submittedBy String
+  submitter  User                @relation(fields: [submittedBy], references: [id])
+  actions    WorkflowAction[]
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+}
+
+model WorkflowAction {
+  id         String           @id @default(uuid())
+  instanceId String
+  instance   WorkflowInstance @relation(fields: [instanceId], references: [id])
+  stepId     String
+  step       WorkflowStep     @relation("StepAction", fields: [stepId], references: [id])
+  actionBy   String
+  actor      User             @relation(fields: [actionBy], references: [id])
+  action     ActionType
+  comment    String?
+  createdAt  DateTime         @default(now())
+}
+
+model Document {
+  id          String         @id @default(uuid())
+  name        String
+  type        DocumentType
+  content     String?
+  fileUrl     String?
+  templateId  String?
+  template    DocumentTemplate? @relation(fields: [templateId], references: [id])
+  entityType  String?
+  entityId    String?
+  status      DocumentStatus @default(DRAFT)
+  createdBy   String
+  creator     User           @relation(fields: [createdBy], references: [id])
+  approvedBy  String?
+  approver    User?          @relation("DocumentApprover", fields: [approvedBy], references: [id])
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model DocumentTemplate {
+  id        String     @id @default(uuid())
+  name      String
+  content   String
+  variables Json
+  type      DocumentType
+  isActive  Boolean    @default(true)
+  documents Document[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  action    String
+  entityType String
+  entityId  String
+  oldValues Json?
+  newValues Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+}
+
+enum WorkflowType {
+  TEAM_REGISTRATION
+  REFEREE_APPLICATION
+  DISCIPLINARY_REVIEW
+  DOCUMENT_APPROVAL
+  COMPETITION_APPROVAL
+}
+
+enum WorkflowStatus {
+  PENDING
+  IN_PROGRESS
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum ActionType {
+  APPROVE
+  REJECT
+  REQUEST_CHANGES
+  COMMENT
+  FORWARD
+}
+
+enum DocumentType {
+  CERTIFICATE
+  REGISTRATION
+  REPORT
+  MINUTES
+  POLICY
+  FORM
+}
+
+enum DocumentStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  ARCHIVED
 }
