@@ -31,34 +31,49 @@ export default function App() {
 
   const fetchData = async () => {
     try {
+      console.log('API_BASE_URL:', API_BASE_URL);
+      
       if (!API_BASE_URL) {
-        // Use mock data when no backend URL is configured
+        console.log('No API URL configured, using mock data');
         setMatches(mockMatches);
         setCompetitions(mockCompetitions);
         setLoading(false);
         return;
       }
 
+      console.log('Fetching from:', `${API_BASE_URL}/api/competitions/matches`);
+      console.log('Fetching from:', `${API_BASE_URL}/api/competitions`);
+
       const [matchesRes, competitionsRes] = await Promise.all([
-        fetch(`${API_BASE_URL}/api/competitions/matches`).catch(() => null),
-        fetch(`${API_BASE_URL}/api/competitions`).catch(() => null)
+        fetch(`${API_BASE_URL}/api/competitions/matches`).catch(err => {
+          console.error('Matches fetch error:', err);
+          return null;
+        }),
+        fetch(`${API_BASE_URL}/api/competitions`).catch(err => {
+          console.error('Competitions fetch error:', err);
+          return null;
+        })
       ]);
 
       if (matchesRes?.ok) {
         const data = await matchesRes.json();
+        console.log('Matches data:', data);
         setMatches(data.slice(0, 6));
       } else {
+        console.error('Matches response not ok:', matchesRes?.status, matchesRes?.statusText);
         setMatches(mockMatches);
       }
 
       if (competitionsRes?.ok) {
         const data = await competitionsRes.json();
+        console.log('Competitions data:', data);
         setCompetitions(data.slice(0, 4));
       } else {
+        console.error('Competitions response not ok:', competitionsRes?.status, competitionsRes?.statusText);
         setCompetitions(mockCompetitions);
       }
     } catch (error) {
-      console.error('Error fetching data, using mock data');
+      console.error('Fetch error - using mock data:', error.message);
       setMatches(mockMatches);
       setCompetitions(mockCompetitions);
     } finally {
