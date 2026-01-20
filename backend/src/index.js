@@ -8,7 +8,8 @@ const app = express();
 const corsOptions = {
   origin: [
     'http://localhost:3000',
-    'https://brics-mu.vercel.app',
+    'https://brics-nu3e.vercel.app',
+    'https://brics-five.vercel.app', 
     'https://*.vercel.app'
   ],
   credentials: true,
