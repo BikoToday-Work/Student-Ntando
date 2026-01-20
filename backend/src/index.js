@@ -8,7 +8,7 @@ const app = express();
 const corsOptions = {
   origin: [
     'http://localhost:3000',
-    'https://bifa-platform.vercel.app',
+    'https://brics-mu.vercel.app',
     'https://*.vercel.app'
   ],
   credentials: true,
