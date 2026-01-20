@@ -3,35 +3,37 @@ const cors = require('cors');
 
 const app = express();
 
-// CORS configuration
-const corsOptions = {
-  origin: [
-    'http://localhost:3000',
-    'https://brics-nu3e.vercel.app',
-    'https://*.vercel.app'
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-};
-
-app.use(cors(corsOptions));
+// Simple CORS configuration
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
 app.use(express.json());
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(500).json({ error: 'Internal server error' });
+});
 
 // Health check
 app.get("/", (req, res) => {
-  res.json({ 
-    message: "BIFA Backend API", 
-    status: "running",
-    timestamp: new Date().toISOString()
-  });
+  try {
+    res.json({ 
+      message: "BIFA Backend API", 
+      status: "running",
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.get("/hello", (req, res) => {
   res.json({ message: "Hello-World" });
 });
 
-// Mock API endpoints for testing
+// Mock API endpoints
 app.get("/api/competitions", (req, res) => {
   res.json([
     { id: 1, name: "BRICS Cup 2024", season: "2024", teams: [] },
@@ -49,7 +51,6 @@ app.get("/api/competitions/matches", (req, res) => {
 app.post("/api/auth/login", (req, res) => {
   const { email, password } = req.body;
   
-  // Mock authentication
   if (email === "admin@bifa.com" && password === "admin123") {
     res.json({
       token: "mock-jwt-token",
@@ -73,5 +74,9 @@ app.get("/api/football/teams", (req, res) => {
   ]);
 });
 
-// Export for Vercel
+// 404 handler
+app.use('*', (req, res) => {
+  res.status(404).json({ error: 'Route not found' });
+});
+
 module.exports = app;
