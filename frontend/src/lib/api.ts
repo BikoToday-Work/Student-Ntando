@@ -147,7 +147,7 @@ class ApiService {
   }
 
   async login(email: string, password: string) {
-    return this.requestWithRetry('/auth/login', {
+    return this.requestWithRetry('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
@@ -160,32 +160,32 @@ class ApiService {
     lastName: string; 
     role?: string 
   }) {
-    return this.requestWithRetry('/auth/register', {
+    return this.requestWithRetry('/api/auth/register', {
       method: 'POST',
       body: JSON.stringify(data),
     });
   }
 
   async getUsers(token: string) {
-    return this.requestWithRetry('/users', {
+    return this.requestWithRetry('/api/users', {
       headers: { 'Authorization': `Bearer ${token}` },
     });
   }
 
   async getTeams() {
-    return this.requestWithRetry('/football/teams');
+    return this.requestWithRetry('/api/football/teams');
   }
 
   async getFixtures() {
-    return this.requestWithRetry('/football/fixtures');
+    return this.requestWithRetry('/api/football/fixtures');
   }
 
   async getCompetitions() {
-    return this.requestWithRetry('/competitions');
+    return this.requestWithRetry('/api/competitions');
   }
 
   async getMatches() {
-    return this.requestWithRetry('/competitions/matches');
+    return this.requestWithRetry('/api/competitions/matches');
   }
 
   // Health check endpoint
