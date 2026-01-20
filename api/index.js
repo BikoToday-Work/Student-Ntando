@@ -3,7 +3,19 @@ const cors = require('cors');
 
 const app = express();
 
-app.use(cors());
+// CORS configuration
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',
+    'https://brics-mu.vercel.app',
+    'https://*.vercel.app'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Health check
@@ -52,6 +64,13 @@ app.post("/api/auth/login", (req, res) => {
   } else {
     res.status(401).json({ error: "Invalid credentials" });
   }
+});
+
+app.get("/api/football/teams", (req, res) => {
+  res.json([
+    { id: 1, name: "Brazil National Team", league: "International" },
+    { id: 2, name: "Argentina National Team", league: "International" }
+  ]);
 });
 
 // Export for Vercel
