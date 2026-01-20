@@ -3,19 +3,8 @@ const cors = require('cors');
 
 const app = express();
 
-// CORS configuration
-const corsOptions = {
-  origin: [
-    'http://localhost:3000',
-    'https://brics-mu.vercel.app',
-    'https://*.vercel.app'
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-};
-
-app.use(cors(corsOptions));
+// CORS configuration - not needed for same domain
+app.use(cors());
 app.use(express.json());
 
 // Health check
