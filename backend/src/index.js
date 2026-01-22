@@ -11,11 +11,18 @@ const governanceRoutes = require('./routes/governanceRoutes');
 
 // CORS configuration
 const corsOptions = {
-  origin: [
-    'http://localhost:3000', // Your local frontend
-    `https://bifa-platform.vercel.app`, // Your production domain
-    `https://${process.env.VERCEL_URL}`, // Vercel's dynamic preview URLs
-  ],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    // Allow localhost and any Vercel deployment
+    if (origin.includes('localhost') || origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+
+    console.log('Blocked by CORS:', origin);
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -85,7 +92,7 @@ app.post('/api/auth/register', async (req, res) => {
       if (dbError.code === 'P2021') {
         return res.status(500).json({ error: 'Database tables not found. Please run migrations.' });
       }
-      return res.status(500).json({ error: 'Database connection failed. Check server logs.' });
+      return res.status(500).json({ error: `Database error: ${dbError.message}` });
     }
 
 
@@ -102,7 +109,7 @@ app.post('/api/auth/register', async (req, res) => {
     });
   } catch (error) {
     console.error('Registration Error:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: `Registration failed: ${error.message}` });
   }
 });
 
@@ -146,7 +153,7 @@ app.post('/api/auth/login', async (req, res) => {
     if (error.code === 'P2021') {
       return res.status(500).json({ error: 'Database tables not found. Please run migrations.' });
     }
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: `Login failed: ${error.message}` });
   }
 });
 
@@ -280,7 +287,7 @@ app.use('/api/governance', governanceRoutes);
 // Error handling
 app.use((err, req, res, next) => {
   console.error('Error:', err);
-  res.status(500).json({ error: 'Internal server error' });
+  res.status(500).json({ error: 'Internal server error', details: err.message });
 });
 
 if (require.main === module) {
