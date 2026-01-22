@@ -2,7 +2,7 @@
   "name": "bifa-platform",
   "version": "1.0.0",
   "scripts": {
-    "build": "prisma generate && prisma migrate deploy",
+    "build": "prisma generate && prisma migrate deploy && npm run build --prefix frontend",
     "start": "node backend/src/index.js",
     "seed": "node backend/scripts/seedAdmin.js"
   },

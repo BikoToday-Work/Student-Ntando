@@ -9,10 +9,11 @@ const app = express();
 
 // CORS configuration
 const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow all origins to fix "failed to fetch" issues
-    return callback(null, true);
-  },
+  origin: [
+    'http://localhost:3000', // Your local frontend
+    `https://bifa-platform.vercel.app`, // Your production domain
+    `https://${process.env.VERCEL_URL}`, // Vercel's dynamic preview URLs
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
