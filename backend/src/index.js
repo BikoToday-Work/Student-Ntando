@@ -8,13 +8,17 @@ require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const app = express();
 
 // Debug: Check for critical environment variables on startup
-const requiredVars = ['DATABASE_URL', 'DIRECT_URL', 'JWT_SECRET'];
-const missingVars = requiredVars.filter(key => !process.env[key]);
+const requiredVars = ['DATABASE_URL', '(key => !process.env[key]);
 
 if (missingVars.length > 0) {
   console.error(`❌ CRITICAL ERROR: Missing environment variables: ${missingVars.join(', ')}`);
 } else {
   console.log('✅ Core environment variables detected.');
+}
+
+// Warn about DIRECT_URL instead of failing
+if (!process.env.DIRECT_URL) {
+  console.warn('⚠️ WARNING: DIRECT_URL is missing. Migrations may fail, but runtime might work if DATABASE_URL is pooled.');
 }
 
 // Check for Football API Key (replace 'FOOTBALL_API_KEY' with the actual name your code uses)
