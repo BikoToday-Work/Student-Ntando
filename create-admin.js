@@ -15,13 +15,13 @@ async function createAdmin() {
     });
 
     if (response.ok) {
-      const data = await response.json();
+      await response.json(); // Consume the response body
       console.log('Admin user created successfully');
       console.log('Email: admin@bifa.com');
       console.log('Password: admin123');
     } else {
-      const error = await response.json();
-      console.log('Error:', error.error);
+      const errorText = await response.text();
+      console.log(`Error creating admin user (${response.status}):`, errorText);
     }
   } catch (error) {
     console.log('Connection error:', error.message);

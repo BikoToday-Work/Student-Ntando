@@ -1,5 +1,13 @@
 const { PrismaClient } = require("@prisma/client");
 
-const prisma = new PrismaClient();
+// Use a global variable to store the Prisma Client instance
+// This prevents multiple instances from being created during hot-reloading
+const globalForPrisma = global;
+
+const prisma = globalForPrisma.prisma || new PrismaClient({
+    log: ['warn', 'error'],
+});
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 module.exports = prisma;

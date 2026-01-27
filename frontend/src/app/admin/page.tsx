@@ -65,7 +65,7 @@ export default function AdminPage() {
   };
 
   const handleManageUsers = () => {
-    alert('User management interface will be implemented');
+    router.push('/admin/users');
   };
 
   const handleViewRoles = () => {

@@ -27,6 +27,12 @@ const footballApi = {
       }
 
       const data = await response.json();
+
+      // Check for API-level errors (e.g. quota reached)
+      if (data.errors && Object.keys(data.errors).length > 0) {
+        console.warn('⚠️ Football API returned errors:', JSON.stringify(data.errors));
+      }
+
       return data;
     } catch (error) {
       console.error('Football API Error:', error);
@@ -82,6 +88,12 @@ const footballApi = {
       }
 
       const data = await response.json();
+
+      // Check for API-level errors (e.g. quota reached)
+      if (data.errors && Object.keys(data.errors).length > 0) {
+        console.warn('⚠️ Football API returned errors:', JSON.stringify(data.errors));
+      }
+
       return data;
     } catch (error) {
       console.error('Football API Error:', error);

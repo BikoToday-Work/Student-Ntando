@@ -172,6 +172,21 @@ class ApiService {
     });
   }
 
+  async updateUserRole(token: string, userId: number, role: string) {
+    return this.requestWithRetry<any>(`/api/users/${userId}/role`, {
+      method: 'PUT',
+      headers: { 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ role }),
+    });
+  }
+
+  async deleteUser(token: string, userId: number) {
+    return this.requestWithRetry<any>(`/api/users/${userId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+  }
+
   async getTeams() {
     return this.requestWithRetry('/api/football/teams');
   }
