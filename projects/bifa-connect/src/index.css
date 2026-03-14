@@ -1,0 +1,298 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@layer base {
+  :root {
+    /* BIFA Brand Colors - HSL */
+    --background: 220 28% 7%;
+    --foreground: 210 20% 95%;
+
+    --card: 220 25% 10%;
+    --card-foreground: 210 20% 95%;
+
+    --popover: 220 25% 12%;
+    --popover-foreground: 210 20% 95%;
+
+    /* BIFA Green - primary brand */
+    --primary: 151 100% 41%;
+    --primary-foreground: 220 28% 7%;
+
+    /* Gold accent */
+    --secondary: 37 91% 55%;
+    --secondary-foreground: 220 28% 7%;
+
+    --muted: 220 22% 15%;
+    --muted-foreground: 215 16% 55%;
+
+    --accent: 220 22% 16%;
+    --accent-foreground: 210 20% 95%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 20% 95%;
+
+    --border: 220 20% 18%;
+    --input: 220 22% 14%;
+    --ring: 151 100% 41%;
+
+    --radius: 0.75rem;
+
+    /* Custom BIFA tokens */
+    --bifa-navy: 220 28% 7%;
+    --bifa-navy-light: 220 25% 12%;
+    --bifa-navy-card: 220 22% 14%;
+    --bifa-green: 151 100% 41%;
+    --bifa-green-glow: 151 100% 31%;
+    --bifa-gold: 37 91% 55%;
+    --bifa-gold-light: 43 96% 66%;
+    --bifa-red: 0 72% 51%;
+    --bifa-blue: 210 100% 56%;
+    --bifa-surface: 220 22% 13%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(220, 28%, 5%) 0%, hsl(220, 35%, 10%) 50%, hsl(151, 60%, 8%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(220, 25%, 12%) 0%, hsl(220, 22%, 10%) 100%);
+    --gradient-green: linear-gradient(135deg, hsl(151, 100%, 41%) 0%, hsl(151, 100%, 28%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(37, 91%, 55%) 0%, hsl(43, 96%, 66%) 100%);
+    --gradient-sidebar: linear-gradient(180deg, hsl(220, 35%, 8%) 0%, hsl(220, 30%, 6%) 100%);
+
+    /* Shadows */
+    --shadow-green: 0 0 40px hsl(151 100% 41% / 0.15);
+    --shadow-card: 0 4px 24px hsl(0 0% 0% / 0.4);
+    --shadow-glow: 0 0 20px hsl(151 100% 41% / 0.3);
+
+    /* Sidebar */
+    --sidebar-background: 220 35% 7%;
+    --sidebar-foreground: 210 20% 85%;
+    --sidebar-primary: 151 100% 41%;
+    --sidebar-primary-foreground: 220 28% 7%;
+    --sidebar-accent: 220 25% 14%;
+    --sidebar-accent-foreground: 210 20% 95%;
+    --sidebar-border: 220 20% 15%;
+    --sidebar-ring: 151 100% 41%;
+  }
+
+  .light {
+    --background: 210 20% 97%;
+    --foreground: 220 28% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 28% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 28% 10%;
+    --primary: 151 100% 35%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 37 91% 55%;
+    --secondary-foreground: 220 28% 10%;
+    --muted: 210 16% 93%;
+    --muted-foreground: 215 16% 45%;
+    --accent: 210 16% 93%;
+    --accent-foreground: 220 28% 10%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 20% 88%;
+    --input: 214 20% 90%;
+    --ring: 151 100% 35%;
+    --gradient-hero: linear-gradient(135deg, hsl(220, 28%, 15%) 0%, hsl(220, 35%, 20%) 50%, hsl(151, 60%, 18%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0, 0%, 100%) 0%, hsl(210, 16%, 97%) 100%);
+    --shadow-card: 0 4px 24px hsl(0 0% 0% / 0.08);
+    --sidebar-background: 220 28% 10%;
+    --sidebar-foreground: 210 20% 85%;
+    --sidebar-primary: 151 100% 41%;
+    --sidebar-primary-foreground: 220 28% 7%;
+    --sidebar-accent: 220 25% 16%;
+    --sidebar-accent-foreground: 210 20% 95%;
+    --sidebar-border: 220 20% 18%;
+    --sidebar-ring: 151 100% 41%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+  }
+
+  .font-display {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.05em;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer utilities {
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+
+  .gradient-card {
+    background: var(--gradient-card);
+  }
+
+  .gradient-green {
+    background: var(--gradient-green);
+  }
+
+  .gradient-gold {
+    background: var(--gradient-gold);
+  }
+
+  .gradient-sidebar {
+    background: var(--gradient-sidebar);
+  }
+
+  .shadow-green {
+    box-shadow: var(--shadow-green);
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .glass {
+    background: hsl(220 25% 12% / 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid hsl(220 20% 20% / 0.5);
+  }
+
+  .glass-light {
+    background: hsl(0 0% 100% / 0.05);
+    backdrop-filter: blur(8px);
+    border: 1px solid hsl(0 0% 100% / 0.1);
+  }
+
+  .bifa-green-text {
+    color: hsl(var(--bifa-green));
+  }
+
+  .bifa-gold-text {
+    color: hsl(var(--bifa-gold));
+  }
+
+  .text-gradient-green {
+    background: var(--gradient-green);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-gold {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .border-glow {
+    border-color: hsl(var(--bifa-green) / 0.4);
+    box-shadow: 0 0 15px hsl(var(--bifa-green) / 0.1);
+  }
+
+  .stat-card {
+    background: var(--gradient-card);
+    border: 1px solid hsl(var(--border));
+    box-shadow: var(--shadow-card);
+    transition: all 0.3s ease;
+  }
+
+  .stat-card:hover {
+    border-color: hsl(var(--bifa-green) / 0.3);
+    box-shadow: var(--shadow-green);
+    transform: translateY(-2px);
+  }
+
+  .nav-item-active {
+    background: hsl(var(--bifa-green) / 0.1);
+    color: hsl(var(--bifa-green));
+    border-right: 3px solid hsl(var(--bifa-green));
+  }
+
+  .pulse-green {
+    animation: pulseGreen 2s ease-in-out infinite;
+  }
+
+  .table-row-hover:hover {
+    background: hsl(var(--bifa-green) / 0.05);
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: hsl(var(--bifa-green) / 0.3);
+    border-radius: 9999px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--bifa-green) / 0.5);
+  }
+
+  /* Prevent layout shift */
+  .prevent-shift {
+    min-height: 0;
+    min-width: 0;
+  }
+
+  /* Better text wrapping */
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@keyframes pulseGreen {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(151 100% 41% / 0.4); }
+  50% { box-shadow: 0 0 0 8px hsl(151 100% 41% / 0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-slide-in-left { animation: slideInLeft 0.4s ease-out; }
+.animate-slide-in-up { animation: slideInUp 0.4s ease-out; }
+.animate-fade-in { animation: fadeIn 0.3s ease-out; }
+.animate-ticker { animation: ticker 30s linear infinite; }

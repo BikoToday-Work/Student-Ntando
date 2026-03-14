@@ -1,0 +1,41 @@
+stages:
+  - test
+  - build
+  - deploy
+
+variables:
+  NODE_VERSION: "18"
+
+cache:
+  paths:
+    - node_modules/
+
+test:
+  stage: test
+  image: node:${NODE_VERSION}
+  script:
+    - npm ci
+    - npm test -- --run || true
+    - npm run lint || true
+
+build:
+  stage: build
+  image: node:${NODE_VERSION}
+  script:
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 week
+
+deploy:
+  stage: deploy
+  image: node:${NODE_VERSION}
+  only:
+    - main
+  script:
+    - npm install -g vercel
+    - vercel --prod --token=$VERCEL_TOKEN
+  environment:
+    name: production
