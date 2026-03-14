@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Student – Ntando
 
 This repository contains all approved work, learning material, and project contributions completed by David as part of the Biko Today programme.
@@ -15,7 +15,7 @@ This repository contains all approved work, learning material, and project contr
 - Keep work structured and documented — no random uploads.
 
 Failure to follow these rules may result in removal from the Biko Today programme and access revoked.
-=======
+
 # BIFA Platform
 
 ## Prerequisites
@@ -88,4 +88,4 @@ npm run dev
 cd frontend
 npm run dev
 ```
->>>>>>> a45aea49a30d9d26ae7466ad479ada7b294dd693
+
